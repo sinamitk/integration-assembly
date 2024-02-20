@@ -1,0 +1,24 @@
+﻿apiVersion: appconnect.ibm.com/v1beta1
+kind: Configuration
+metadata:
+  name: agdesignerdemo1-designer-acc
+  namespace: cp4i
+  ownerReferences:
+    - apiVersion: appconnect.ibm.com/v1beta1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DesignerAuthoring
+      name: agdesignerdemo1
+      uid: fb1ce394-f76f-418f-aa68-18b0d94d1429
+  labels:
+    app.kubernetes.io/component: accounts
+    app.kubernetes.io/instance: agdesignerdemo1
+    app.kubernetes.io/managed-by: ibm-appconnect
+    app.kubernetes.io/name: agdesignerdemo1
+    appconnect.ibm.com/kind: DesignerAuthoring
+    backup.appconnect.ibm.com/component: designerauthoring
+    bcdr-candidate: t
+    release: agdesignerdemo1
+spec:
+  secretName: agdesignerdemo1-designer-acc
+  type: accounts

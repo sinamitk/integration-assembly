@@ -1,0 +1,99 @@
+$integration: http://ibm.com/appconnect/integration/v2/integrationFile
+integration:
+  type: api
+  trigger-interfaces:
+    trigger-interface-1:
+      triggers: {}
+      options:
+        resources:
+          - business-object: lead
+            model:
+              $ref: '#/models/lead'
+            triggers: {}
+      type: api-trigger
+  action-interfaces: {}
+  assemblies: {}
+  name: AG Demo Lead API Structure Template
+models:
+  lead:
+    name: lead
+    properties:
+      Town:
+        required: false
+        id: false
+        type: string
+      Company:
+        required: false
+        id: false
+        type: string
+      Country:
+        required: false
+        id: false
+        type: string
+      CreatedDate:
+        required: false
+        id: false
+        type: date
+      Description:
+        required: false
+        id: false
+        type: string
+      Email:
+        required: false
+        id: false
+        type: string
+      FirstName:
+        required: false
+        id: false
+        type: string
+      Id:
+        required: false
+        id: true
+        type: string
+      Industry:
+        required: false
+        id: false
+        type: string
+      LastName:
+        required: false
+        id: false
+        type: string
+      LeadSource:
+        required: false
+        id: false
+        type: string
+      MobilePhone:
+        required: false
+        id: false
+        type: string
+      Name:
+        required: false
+        id: false
+        type: string
+      Telephone:
+        required: false
+        id: false
+        type: string
+      ZipCode:
+        required: false
+        id: false
+        type: string
+      Salutation:
+        required: false
+        id: false
+        type: string
+      State:
+        required: false
+        id: false
+        type: string
+      Street:
+        required: false
+        id: false
+        type: string
+      Title:
+        required: false
+        id: false
+        type: string
+    plural: lead
+    description: ' '
+    operations: {}

@@ -1,0 +1,308 @@
+$integration: http://ibm.com/appconnect/integration/v2/integrationFile
+integration:
+  type: api
+  trigger-interfaces:
+    trigger-interface-1:
+      triggers:
+        createLead:
+          assembly:
+            $ref: '#/integration/assemblies/assembly-1'
+          input-context:
+            data: lead
+          output-context:
+            data: lead
+        retrieveLead:
+          assembly:
+            $ref: '#/integration/assemblies/assembly-2'
+          input-context:
+            data: lead
+          output-context:
+            data: lead
+      options:
+        resources:
+          - business-object: lead
+            model:
+              $ref: '#/models/lead'
+            triggers:
+              create: createLead
+              retrieve: retrieveLead
+      type: api-trigger
+  action-interfaces:
+    action-interface-4:
+      type: api-action
+      business-object: Lead
+      connector-type: salesforce
+      account-name: App Connect Trial
+      actions:
+        CREATE: {}
+    action-interface-1:
+      type: api-action
+      business-object: message
+      connector-type: slack
+      account-name: App Connect Trial
+      actions:
+        CREATE: {}
+    action-interface-2:
+      type: api-action
+      business-object: Lead
+      connector-type: salesforce
+      account-name: App Connect Trial
+      actions:
+        RETRIEVEALL: {}
+  assemblies:
+    assembly-1:
+      assembly:
+        execute:
+          - create-action:
+              name: Salesforce Create lead
+              target:
+                $ref: '#/integration/action-interfaces/action-interface-4'
+              map:
+                mappings:
+                  - City:
+                      template: '{{$Request.Town}}'
+                  - Company:
+                      template: '{{$Request.Company}}'
+                  - Country:
+                      template: '{{$Request.Country}}'
+                  - Description:
+                      template: '{{$Request.Description}}'
+                  - Email:
+                      template: '{{$Request.Email}}'
+                  - FirstName:
+                      template: '{{$Request.FirstName}}'
+                  - Industry:
+                      template: '{{$Request.Industry}}'
+                  - LastName:
+                      template: '{{$Request.LastName}}'
+                  - LeadSource:
+                      template: '{{$Request.LeadSource}}'
+                  - MobilePhone:
+                      template: '{{$Request.MobilePhone}}'
+                  - Phone:
+                      template: '{{$Request.Telephone}}'
+                  - PostalCode:
+                      template: '{{$Request.ZipCode}}'
+                  - Salutation:
+                      template: '{{$Request.Salutation}}'
+                  - State:
+                      template: '{{$Request.State}}'
+                  - Street:
+                      template: '{{$Request.Street}}'
+                  - Title:
+                      template: >-
+                        {{($uppercase($Request.LastName))&(',
+                        ')&($substring($Request.FirstName, 0, 1))&('.
+                        ')&($Request.Title)&('.')}}
+                $map: http://ibm.com/appconnect/map/v1
+                input:
+                  - variable: Request
+                    $ref: '#/trigger/payload'
+                  - variable: flowDetails
+                    $ref: '#/flowDetails'
+          - create-action:
+              name: Slack Send message
+              target:
+                $ref: '#/integration/action-interfaces/action-interface-1'
+              map:
+                mappings:
+                  - OBJECT_ID:
+                      template: C0266961Q68
+                  - OBJECT_NAME:
+                      template: channel
+                  - text:
+                      template: >-
+                        New lead created. Contact {{$Request.FirstName}}
+                        {{$Request.LastName}} with email {{$Request.Email}}
+                $map: http://ibm.com/appconnect/map/v1
+                input:
+                  - variable: Request
+                    $ref: '#/trigger/payload'
+                  - variable: SalesforceCreatelead
+                    $ref: '#/node-output/Salesforce Create lead/response/payload'
+                  - variable: flowDetails
+                    $ref: '#/flowDetails'
+          - response:
+              name: response-1
+              reply-maps:
+                - title: lead successfully created
+                  status-code: 201
+                  map:
+                    mappings:
+                      - Id:
+                          template: '{{$SalesforceCreatelead.Id}}'
+                    $map: http://ibm.com/appconnect/map/v1
+                    input:
+                      - variable: Request
+                        $ref: '#/trigger/payload'
+                      - variable: SalesforceCreatelead
+                        $ref: '#/node-output/Salesforce Create lead/response/payload'
+                      - variable: SlackSendmessage
+                        $ref: '#/node-output/Slack Send message/response/payload'
+                      - variable: flowDetails
+                        $ref: '#/flowDetails'
+                  input: []
+    assembly-2:
+      assembly:
+        execute:
+          - retrieve-action:
+              name: Salesforce Retrieve leads
+              target:
+                $ref: '#/integration/action-interfaces/action-interface-2'
+              filter:
+                where:
+                  Id: '{{$api.Id}}'
+                input:
+                  - variable: api
+                    $ref: '#/trigger/api/parameters'
+                  - variable: flowDetails
+                    $ref: '#/flowDetails'
+                limit: 1
+              allow-truncation: false
+              pagination-type: TOKEN
+              allow-empty-output: false
+          - response:
+              name: response-1
+              reply-maps:
+                - title: lead successfully retrieved
+                  status-code: 200
+                  map:
+                    mappings:
+                      - Company:
+                          template: '{{$SalesforceRetrieveleads.Company}}'
+                      - Country:
+                          template: '{{$SalesforceRetrieveleads.Country}}'
+                      - CreatedDate:
+                          template: '{{$SalesforceRetrieveleads.CreatedDate}}'
+                      - Description:
+                          template: '{{$SalesforceRetrieveleads.Description}}'
+                      - Email:
+                          template: '{{$SalesforceRetrieveleads.Email}}'
+                      - FirstName:
+                          template: '{{$SalesforceRetrieveleads.FirstName}}'
+                      - Id:
+                          template: '{{$SalesforceRetrieveleads.Id}}'
+                      - Industry:
+                          template: '{{$SalesforceRetrieveleads.Industry}}'
+                      - LastName:
+                          template: '{{$SalesforceRetrieveleads.LastName}}'
+                      - LeadSource:
+                          template: '{{$SalesforceRetrieveleads.LeadSource}}'
+                      - MobilePhone:
+                          template: '{{$SalesforceRetrieveleads.MobilePhone}}'
+                      - Name:
+                          template: '{{$SalesforceRetrieveleads.Name}}'
+                      - Salutation:
+                          template: '{{$SalesforceRetrieveleads.Salutation}}'
+                      - State:
+                          template: '{{$SalesforceRetrieveleads.State}}'
+                      - Street:
+                          template: '{{$SalesforceRetrieveleads.Street}}'
+                      - Telephone:
+                          template: '{{$SalesforceRetrieveleads.Phone}}'
+                      - Title:
+                          template: '{{$SalesforceRetrieveleads.Title}}'
+                      - Town:
+                          template: '{{$SalesforceRetrieveleads.City}}'
+                      - ZipCode:
+                          template: '{{$SalesforceRetrieveleads.PostalCode}}'
+                    $map: http://ibm.com/appconnect/map/v1
+                    input:
+                      - variable: api
+                        $ref: '#/trigger/api/parameters'
+                      - variable: SalesforceRetrieveleads
+                        $ref: >-
+                          #/node-output/Salesforce Retrieve
+                          leads/response/payload
+                      - variable: SalesforceRetrieveleadsMetadata
+                        $ref: '#/node-output/Salesforce Retrieve leads/response'
+                      - variable: flowDetails
+                        $ref: '#/flowDetails'
+                  input: []
+  name: AGDemoLead
+  description: Demo Lead API fully implemented with flows.
+models:
+  lead:
+    name: lead
+    properties:
+      Town:
+        required: false
+        id: false
+        type: string
+      Company:
+        required: false
+        id: false
+        type: string
+      Country:
+        required: false
+        id: false
+        type: string
+      CreatedDate:
+        required: false
+        id: false
+        type: date
+      Description:
+        required: false
+        id: false
+        type: string
+      Email:
+        required: false
+        id: false
+        type: string
+      FirstName:
+        required: false
+        id: false
+        type: string
+      Id:
+        required: false
+        id: true
+        type: string
+      Industry:
+        required: false
+        id: false
+        type: string
+      LastName:
+        required: false
+        id: false
+        type: string
+      LeadSource:
+        required: false
+        id: false
+        type: string
+      MobilePhone:
+        required: false
+        id: false
+        type: string
+      Name:
+        required: false
+        id: false
+        type: string
+      Telephone:
+        required: false
+        id: false
+        type: string
+      ZipCode:
+        required: false
+        id: false
+        type: string
+      Salutation:
+        required: false
+        id: false
+        type: string
+      State:
+        required: false
+        id: false
+        type: string
+      Street:
+        required: false
+        id: false
+        type: string
+      Title:
+        required: false
+        id: false
+        type: string
+    plural: lead
+    description: ' '
+    operations:
+      create: '#/integration/assemblies/assembly-1'
+      retrieve: '#/integration/assemblies/assembly-2'
