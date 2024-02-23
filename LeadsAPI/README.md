@@ -1,7 +1,7 @@
 # Andy G "Create Leads" API Demo
 (This is purely a 'This is what I use for my demos' repo - feel free to use what's here but there is no support available and this is NOT an official IBM demo)
 
-Shortcut to [Build Instructions](Docs/READMe.md)
+Shortcut to [Build Instructions](Docs/README.md)
 ## Scenario overview
 Tia is a mobile application developer. She needs to create a new mobile app for an upcoming conference that her company is hosting. Staff will use the mobile app to scan the QR codes on attendees' badges and the app will then create new lead for that attendee with their details in Salesforce.
 
@@ -53,4 +53,4 @@ This is a 'I just want it done' requirement - Tia is a mobile App Developer - if
 11. Celebrate with your tasty beverage!
 
 ## Next Steps
-Go to [Build Instructions](Docs/READMe.md) to get started.
+Go to [Build Instructions](Docs/README.md) to get started.
