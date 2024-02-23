@@ -17,7 +17,7 @@ This differs from the notification above as it works however the lead is created
 
 This demo can be run standalone or as a follow-on from the Leads API demo above - if it is a follow on, it is deployed as an addition to the same integration assembly.
 
-Go to [AG DEMO Leads Event to Slack ](LeadsEventtoSlack/README.md) to get started.
+Go to [AG DEMO Leads Event to Slack ](LeadsEventToSlack/README.md) to get started.
 
 ### When a new lead is created in Salesforce, put a message on an Event Streams/Kafka topic and publish it to Event Endpoint Management (EEM)
 When a new lead is created in Salesforce by any means (either by using the Salesforce UI or by using the API in 'Create and Deploy a Leads API' above), a notification is sent to slack.
@@ -26,7 +26,7 @@ This differs from the notification above as it works however the lead is created
 
 This demo can be run standalone or as a follow-on from the "Leads API" or the "Leads Event to Slack" demos above - if it is a follow on to 'Leads API', it is deployed as part of the same integration assembly. If it is a follow on to "Leads Event to Slack" then it replaces that flow.
 
-Go to [AG DEMO Leads Event to Kafka and EEM ](LeadsEventtoKafkaAndEEM/README.md) to get started.
+Go to [AG DEMO Leads Event to Kafka and EEM ](LeadsEventToKafkaAndEEM/README.md) to get started.
 
 ## Disclaimer: ##
 
