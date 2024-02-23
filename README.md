@@ -1,7 +1,7 @@
 # AGDemos
-Andy G demo artefacts for CP4I
+Andy G demo artefacts for IBM Cloud Pak for Integration (CP4I)
 
-These are my own artefacts, resources and notes taht I use for my demos
+These are my own artefacts, resources and notes that I use for my demos - there may be errors/bugs/omissions....
 
 ## List of Demos ##
 ### Create and Deploy a Leads API
