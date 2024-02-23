@@ -91,6 +91,13 @@ Also,you don't need to enter your slack workspace name or anything even though y
 **Category**: Dependency
 
 It doesn't really matter what this is called, use the 'small' template on the operator in the absence of anything else and just create an instance. If you are using the '1-click' install on ROKS, your instance will be called 'ademo'
+
+Tip - if you get asked for a backup S3 bucket, add the following to your CR so you can override it:
+```
+metadata:
+  annotations:
+    apiconnect-operator/backups-not-configured: 'true'
+```
 ### 2. Provider Organisation
 **Category**: Dependency
 
