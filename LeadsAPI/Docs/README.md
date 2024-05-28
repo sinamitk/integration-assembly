@@ -118,6 +118,11 @@ To set up a portal, go to **API Manager ->Choose-your-provider-org-from-the-top-
 ### 5. Email Notification
 **Category**: Dependency
 
+Note that you won't be able to create a portal if the catalog owner does not have an email address. To change this, edit your user profile in keycloak (click the 'person' icon at the top right)
+![alt text](image-19.png)
+
+You'll need to sign out and in again for the changes to take effect in APIC.
+
 When you create an APIC portal, to create an app and subscription to an API you will need to sign up to the developer portal as a consumer organisation. To do this, you can 'create an account' but APIC will need to send you an email to verify/activate your account. Hence APIC will need an SMTP server to use to send you that email.
 
 To set up the email, go to **API Management Administration / Cloud Manager -> Configure Cloud -> Notifications -> Edit email server -> Congfigure Email server**. Once you have it configured,  set it as the defaul in **Notifications/Edit email server**
