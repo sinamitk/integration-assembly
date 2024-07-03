@@ -1,0 +1,120 @@
+$integration: http://ibm.com/appconnect/integration/v2/integrationFile
+integration:
+  type: trigger-action
+  trigger-interfaces:
+    trigger-interface-1:
+      type: event-trigger
+      connector-type: mq
+      triggers:
+        CREATED:
+          assembly:
+            $ref: '#/integration/assemblies/assembly-1'
+          input-context:
+            data: message
+          options:
+            subscription:
+              queueName: bernierequest
+              browseOnly: 'No'
+      account-name: dddacme
+  action-interfaces:
+    action-interface-1:
+      type: api-action
+      business-object: message
+      connector-type: mq
+      account-name: dddacme
+      actions:
+        PUTMESSAGE: {}
+  assemblies:
+    assembly-1:
+      assembly:
+        execute:
+          - parse:
+              parse-format: json
+              source:
+                template: '{{$Trigger.message}}'
+                input:
+                  - variable: Trigger
+                    $ref: '#/trigger/payload'
+                  - variable: flowDetails
+                    $ref: '#/flowDetails'
+              sample-data: >-
+                {"quoteid":"SampleQuoteid","licenseplate":"SampleLicenseplate","descriptionofdamage":"SampleDescriptionofdamage"}
+              output-schema:
+                $schema: http://json-schema.org/draft-04/schema#
+                type: object
+                properties:
+                  quoteid:
+                    type: string
+                  licenseplate:
+                    type: string
+                  descriptionofdamage:
+                    type: string
+                title: requestforquote
+              name: JSON Parser Parse
+          - set-variable:
+              map:
+                $map: http://ibm.com/appconnect/map/v1
+                customSchemas:
+                  properties.`variable`:
+                    type: object
+                    properties:
+                      quoteid:
+                        type: string
+                      quotedate:
+                        type: string
+                        format: date-time
+                      quoteamount:
+                        type: number
+                input:
+                  - variable: Trigger
+                    $ref: '#/trigger/payload'
+                  - variable: JSONParserParse
+                    $ref: '#/node-output/JSON Parser Parse/response/payload'
+                  - variable: flowDetails
+                    $ref: '#/flowDetails'
+                mappings:
+                  - variable:
+                      mappings:
+                        - quoteamount:
+                            expression: $round($random() *100000)/100
+                        - quotedate:
+                            template: '{{$fromMillis($toMillis($now())+$random()*30*(24*3600*1000))}}'
+                        - quoteid:
+                            template: '{{$JSONParserParse.quoteid}}'
+              name: Set variable
+          - custom-action:
+              action: PUTMESSAGE
+              name: IBM MQ Put message on a queue
+              target:
+                $ref: '#/integration/action-interfaces/action-interface-1'
+              map:
+                customSchemas:
+                  properties.`mqmdHeader`:
+                    type: object
+                    properties:
+                      CorrelId:
+                        type: string
+                mappings:
+                  - message:
+                      template: '{{$Setvariable.variable}}'
+                  - messageType:
+                      template: TEXT
+                  - mqmdHeader:
+                      mappings:
+                        - CorrelId:
+                            template: '{{$Trigger.mqmdHeader.CorrelId}}'
+                  - queueName:
+                      template: berniereply
+                $map: http://ibm.com/appconnect/map/v1
+                input:
+                  - variable: Trigger
+                    $ref: '#/trigger/payload'
+                  - variable: JSONParserParse
+                    $ref: '#/node-output/JSON Parser Parse/response/payload'
+                  - variable: Setvariable
+                    $ref: '#/node-output/Set variable/response/payload'
+                  - variable: flowDetails
+                    $ref: '#/flowDetails'
+  name: dddbernieProvideQuote
+  description: Driveway Dent Deletion Bernie provider flow
+models: {}
