@@ -1,0 +1,274 @@
+apiVersion: integration.ibm.com/v1beta1
+kind: IntegrationAssembly
+metadata:
+  labels:
+    backup.integration.ibm.com/component: integrationassembly
+  name: ddd1
+  namespace: cp4i
+spec:
+  independentResources:
+    selector:
+      matchLabels:
+        assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  license:
+    accept: true
+    license: L-JTPV-KYG8TF
+    use: CloudPakForIntegrationNonProduction
+  managedInstances:
+    list: []
+  managedIntegrations:
+    list:
+      - kind: IntegrationRuntime
+        metadata:
+          name: dddapi
+        spec:
+          barURL:
+            - >-
+              https://github.com/andygblue/agdemos/raw/main/DrivewayDentDeletion/BARFiles/dddapi.bar
+          configurations:
+            - dddqconfig
+            - barauth-empty
+      - kind: IntegrationRuntime
+        metadata:
+          name: acmeprovidequote
+        spec:
+          barURL:
+            - >-
+              https://github.com/andygblue/agdemos/raw/main/DrivewayDentDeletion/BARFiles/dddacmeProvideQuote.bar
+          configurations:
+            - dddqconfig
+            - barauth-empty
+      - kind: IntegrationRuntime
+        metadata:
+          name: bernieprovidequote
+        spec:
+          barURL:
+            - >-
+              https://github.com/andygblue/agdemos/raw/main/DrivewayDentDeletion/BARFiles/dddbernieProvideQuote.bar
+          configurations:
+            - dddqconfig
+            - barauth-empty
+      - kind: IntegrationRuntime
+        metadata:
+          name: chrisprovidequote
+        spec:
+          barURL:
+            - >-
+              https://github.com/andygblue/agdemos/raw/main/DrivewayDentDeletion/BARFiles/dddchrisProvideQuote.bar
+          configurations:
+            - dddqconfig
+            - barauth-empty
+  storage:
+    readWriteOnce:
+      class: ocs-storagecluster-ceph-rbd
+  version: 16.1.0
+---
+apiVersion: apiconnect.ibm.com/v1beta1
+kind: Product
+metadata:
+  finalizers:
+    - ibm.com/Product-APIM-finalizer
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: dddproduct
+  namespace: cp4i
+spec:
+  apis:
+    integrationRuntimes:
+      - name: dddapi
+  definition:
+    info:
+      name: driveway-dent-deletion
+      title: Driveway-Dent-Deletion
+      version: '1.0'
+    plans:
+      default-plan:
+        approval: false
+        description: Default Plan
+        rate-limits:
+          default:
+            value: 200/1hour
+        title: Default Plan
+    product: 1.0.0
+  share:
+    apim:
+      catalog: main-demo-catalog
+      credentialsSecret: apim-credentials
+      providerOrg: main-demo
+  state: Published
+---
+kind: Configuration
+metadata:
+  name: dddqconfig
+  namespace: cp4i
+  labels:
+    assembly.integration.ibm.com/cp4i.ia-canvas: 'true'
+apiVersion: appconnect.ibm.com/v1beta1
+spec:
+  type: accounts
+  data: YWNjb3VudHM6IHt9
+---
+apiVersion: integration.ibm.com/v1beta1
+kind: MessagingUser
+metadata:
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: acme
+  namespace: cp4i
+spec:
+  configurations:
+    - accountName: dddacme
+      name: dddqconfig
+  designerAuthorings:
+    - accountName: dddacme
+      name: agdemodesigner
+  user:
+    channel:
+      name: dddchannel1
+    queues:
+      - auth:
+          - GET
+          - PUT
+          - INQ
+          - PASSALL
+        name: acmerequest
+      - auth:
+          - GET
+          - PUT
+          - INQ
+          - PASSALL
+        name: acmereply
+      - auth:
+          - GET
+          - PUT
+          - INQ
+          - PASSALL
+        name: chrisrequest
+      - auth:
+          - GET
+          - PUT
+          - INQ
+          - PASSALL
+        name: chrisreply
+      - auth:
+          - GET
+          - PUT
+          - INQ
+          - PASSALL
+        name: bernierequest
+      - auth:
+          - GET
+          - PUT
+          - INQ
+          - PASSALL
+        name: berniereply
+---
+apiVersion: integration.ibm.com/v1beta1
+kind: MessagingChannel
+metadata:
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: dddchannel1
+  namespace: cp4i
+spec:
+  channel:
+    type: ServerConnMTLS
+  messagingServer:
+    name: dddserver
+  sniRoute:
+    enabled: true
+---
+apiVersion: integration.ibm.com/v1beta1
+kind: MessagingQueue
+metadata:
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: acmereply
+  namespace: cp4i
+spec:
+  messagingServer:
+    name: dddserver
+  queue:
+    type: Local
+---
+apiVersion: integration.ibm.com/v1beta1
+kind: MessagingQueue
+metadata:
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: acmerequest
+  namespace: cp4i
+spec:
+  messagingServer:
+    name: dddserver
+  queue:
+    type: Local
+---
+apiVersion: integration.ibm.com/v1beta1
+kind: MessagingQueue
+metadata:
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: berniereply
+  namespace: cp4i
+spec:
+  messagingServer:
+    name: dddserver
+  queue:
+    type: Local
+---
+apiVersion: integration.ibm.com/v1beta1
+kind: MessagingQueue
+metadata:
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: bernierequest
+  namespace: cp4i
+spec:
+  messagingServer:
+    name: dddserver
+  queue:
+    type: Local
+---
+apiVersion: integration.ibm.com/v1beta1
+kind: MessagingQueue
+metadata:
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: chrisreply
+  namespace: cp4i
+spec:
+  messagingServer:
+    name: dddserver
+  queue:
+    type: Local
+---
+apiVersion: integration.ibm.com/v1beta1
+kind: MessagingQueue
+metadata:
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: chrisrequest
+  namespace: cp4i
+spec:
+  messagingServer:
+    name: dddserver
+  queue:
+    type: Local
+---
+apiVersion: integration.ibm.com/v1beta1
+kind: MessagingServer
+metadata:
+  labels:
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
+  name: dddserver
+  namespace: cp4i
+spec:
+  license:
+    accept: true
+    license: L-JTPV-KYG8TF
+    use: CloudPakForIntegrationNonProduction
+  queueManager:
+    storage:
+      defaultClass: ocs-storagecluster-ceph-rbd
+  version: 16.1.0
