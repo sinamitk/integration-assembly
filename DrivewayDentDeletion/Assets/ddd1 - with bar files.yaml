@@ -97,13 +97,13 @@ spec:
       providerOrg: main-demo
   state: Published
 ---
+apiVersion: appconnect.ibm.com/v1beta1
 kind: Configuration
 metadata:
   name: dddqconfig
   namespace: cp4i
   labels:
-    assembly.integration.ibm.com/cp4i.ia-canvas: 'true'
-apiVersion: appconnect.ibm.com/v1beta1
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
 spec:
   type: accounts
   data: YWNjb3VudHM6IHt9
