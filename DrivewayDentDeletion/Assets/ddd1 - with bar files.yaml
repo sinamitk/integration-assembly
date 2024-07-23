@@ -100,10 +100,14 @@ spec:
 apiVersion: appconnect.ibm.com/v1beta1
 kind: Configuration
 metadata:
+  annotations:
+    configuration-last-updated: '1720514846'
+  labels:
+    backup.appconnect.ibm.com/component: configuration
+    bcdr-candidate: t
+    assembly.integration.ibm.com/cp4i.ddd1: 'true'
   name: dddqconfig
   namespace: cp4i
-  labels:
-    assembly.integration.ibm.com/cp4i.ddd1: 'true'
 spec:
   type: accounts
   data: YWNjb3VudHM6IHt9
