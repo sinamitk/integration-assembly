@@ -11,7 +11,7 @@ spec:
       matchLabels:
         assembly.integration.ibm.com/cp4i.ddd1: 'true'
   license:
-    accept: true
+    accept: false
     license: L-JTPV-KYG8TF
     use: CloudPakForIntegrationNonProduction
   managedInstances:
