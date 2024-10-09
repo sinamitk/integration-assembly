@@ -1,0 +1,8 @@
+﻿apiVersion: appconnect.ibm.com/v1beta1
+kind: Configuration
+metadata:
+  name: designerconf-designer-acc
+  namespace: cp4i
+spec:
+  secretName: designer-designer-acc
+  type: accounts
