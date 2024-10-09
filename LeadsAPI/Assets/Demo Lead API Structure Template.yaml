@@ -13,7 +13,7 @@ integration:
       type: api-trigger
   action-interfaces: {}
   assemblies: {}
-  name: AG Demo Lead API Structure Template
+  name:  Demo Lead API Structure Template
 models:
   lead:
     name: lead
