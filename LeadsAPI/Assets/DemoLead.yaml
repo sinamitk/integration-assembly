@@ -219,7 +219,7 @@ integration:
                       - variable: flowDetails
                         $ref: '#/flowDetails'
                   input: []
-  name: AGDemoLead
+  name: DemoLead
   description: Demo Lead API fully implemented with flows.
 models:
   lead:
