@@ -1,7 +1,7 @@
 ﻿apiVersion: appconnect.ibm.com/v1beta1
 kind: Configuration
 metadata:
-  name: barauth-empty
+  name: barauth-empty-conf
   namespace: cp4i
 spec:
   description: 'Authentication for public GitHub, no credentials needed'
